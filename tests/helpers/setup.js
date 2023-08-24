@@ -7,7 +7,8 @@ configure({ adapter: new Adapter() });
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom;
 
-const { document } = (new JSDOM('')).window;
+const dom = new JSDOM('', {url: "http://localhost"})
+const { document } = dom.window;
 
 const exposedProperties = ['window', 'navigator', 'document'];
 const storage = {};
