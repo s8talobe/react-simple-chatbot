@@ -31,9 +31,9 @@ class ChatBot extends Component {
 
     this.supportsScrollBehavior = false;
 
-    this.setContentRef = React.createRef()
+    this.setContentRef = React.createRef();
 
-    this.setInputRef = React.createRef()
+    this.setInputRef = React.createRef();
 
     this.state = {
       renderedSteps: [],
@@ -167,8 +167,8 @@ class ChatBot extends Component {
       previousSteps: [],
       currentStep: {},
       previousStep: {},
-      steps: {},
-    })
+      steps: {}
+    });
     if (this.content) {
       this.content.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
