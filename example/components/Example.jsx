@@ -18,6 +18,11 @@ const steps = [
   {
     id: '1',
     message: 'Hello World',
+    trigger: '2'
+  }, 
+  {
+    id: '2',
+    message: 'What the hell?',
     end: true
   }
 ];

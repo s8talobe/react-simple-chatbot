@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 import { scale } from '../../common/animations';
 
-const Image = styled.img`
+const Image = styled.img.attrs({
+  width: '40',
+  height: '40'
+})`
   animation: ${scale} 0.3s ease forwards;
   border-radius: ${props => (props.user ? '50% 50% 50% 0' : '50% 50% 0 50%')};
   box-shadow: rgba(0, 0, 0, 0.15) 0px 1px 2px 0px;

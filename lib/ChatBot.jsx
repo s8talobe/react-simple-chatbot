@@ -31,13 +31,9 @@ class ChatBot extends Component {
 
     this.supportsScrollBehavior = false;
 
-    this.setContentRef = element => {
-      this.content = element;
-    };
+    this.setContentRef = React.createRef()
 
-    this.setInputRef = element => {
-      this.input = element;
-    };
+    this.setInputRef = React.createRef()
 
     this.state = {
       renderedSteps: [],
@@ -166,6 +162,13 @@ class ChatBot extends Component {
   }
 
   componentWillUnmount() {
+    this.setState({
+      renderedSteps: [],
+      previousSteps: [],
+      currentStep: {},
+      previousStep: {},
+      steps: {},
+    })
     if (this.content) {
       this.content.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
@@ -690,7 +693,7 @@ class ChatBot extends Component {
                 ref={this.setInputRef}
                 className="rsc-input"
                 placeholder={inputInvalid ? '' : inputPlaceholder}
-                onKeyPress={this.handleKeyPress}
+                onKeyDown={this.handleKeyPress}
                 onChange={this.onValueChange}
                 value={inputValue}
                 floating={floating}

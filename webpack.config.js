@@ -9,9 +9,8 @@ module.exports = {
     filename: 'bundle.js'
   },
   devServer: {
-    contentBase: path.join(__dirname, 'example'),
+    static: path.join(__dirname, 'example'),
     host: '0.0.0.0',
-    disableHostCheck: true
   },
   resolve: {
     extensions: ['.js', '.jsx']
