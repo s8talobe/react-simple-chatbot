@@ -17,7 +17,7 @@ class TextStep extends Component {
     const { component, delay, waitAction } = step;
     const isComponentWatingUser = component && waitAction;
 
-    setTimeout(() => {
+    this._timeout = setTimeout(() => {
       this.setState({ loading: false }, () => {
         if (!isComponentWatingUser && !step.rendered) {
           triggerNextStep();
@@ -25,6 +25,10 @@ class TextStep extends Component {
         speak(step, previousValue);
       });
     }, delay);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._timeout);
   }
 
   getMessage = () => {

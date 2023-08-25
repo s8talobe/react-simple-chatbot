@@ -116,8 +116,8 @@ class ChatBot extends Component {
 
     this.supportsScrollBehavior = 'scrollBehavior' in document.documentElement.style;
 
-    if (this.content) {
-      this.content.addEventListener('DOMNodeInserted', this.onNodeInserted);
+    if (this.setContentRef.current) {
+      this.setContentRef.current.addEventListener('DOMNodeInserted', this.onNodeInserted);
       window.addEventListener('resize', this.onResize);
     }
 
@@ -139,7 +139,6 @@ class ChatBot extends Component {
         });
       }
     );
-
     this.setState({
       currentStep,
       defaultUserSettings,
@@ -162,15 +161,8 @@ class ChatBot extends Component {
   }
 
   componentWillUnmount() {
-    this.setState({
-      renderedSteps: [],
-      previousSteps: [],
-      currentStep: {},
-      previousStep: {},
-      steps: {}
-    });
-    if (this.content) {
-      this.content.removeEventListener('DOMNodeInserted', this.onNodeInserted);
+    if (this.setContentRef.current) {
+      this.setContentRef.current.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
     }
   }
@@ -191,7 +183,7 @@ class ChatBot extends Component {
   };
 
   onResize = () => {
-    this.content.scrollTop = this.content.scrollHeight;
+    this.setContentRef.current.scrollTop = this.setContentRef.current.scrollHeight;
   };
 
   onRecognitionChange = value => {
