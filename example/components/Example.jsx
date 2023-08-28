@@ -28,7 +28,7 @@ const steps = [
   {
     id: '3',
     options: [
-      {value: '1', label: 'Whats is it?', trigger: '4'},
+      {value: '1', label: 'What is it?', trigger: '4'},
       {value: '2', label: 'Wait what?', trigger: '5'}
     ]
   },
@@ -45,6 +45,26 @@ const steps = [
   {
     id: '6',
     message: 'Hello World',
+    trigger: '7'
+  },
+  {
+    id: '7',
+    message: 'Hello World oh you beautiful world, what are you doing to me? Hello again its me what are you lookin for?',
+    trigger: '8'
+  },
+  {
+    id: '8',
+    message: 'Hello World',
+    trigger: '9'
+  },
+  {
+    id: '9',
+    message: 'Hello World',
+    trigger: '10'
+  },
+  {
+    id: '10',
+    message: 'Hello World',
     end: true
   }
 ];
@@ -52,19 +72,10 @@ const steps = [
 
 const ThemedExample = () => {
 
-  const [showBot, setShowBot] = useState(true);
-
-  const handleBot = () => {
-    setShowBot(!showBot)
-  }
-
   return (
     <ThemeProvider theme={otherFontTheme}>
       <React.StrictMode>
-        {showBot &&
           <ChatBot steps={steps} />
-        }
-        <button onClick={handleBot}>Mount/Unmount</button>
       </React.StrictMode>
     </ThemeProvider>
   )

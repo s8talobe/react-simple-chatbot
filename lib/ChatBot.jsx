@@ -26,14 +26,11 @@ class ChatBot extends Component {
   constructor(props) {
     super(props);
 
-    this.content = null;
-    this.input = null;
-
     this.supportsScrollBehavior = false;
 
-    this.setContentRef = React.createRef();
+    this.contentRef = React.createRef();
 
-    this.setInputRef = React.createRef();
+    this.inputRef = React.createRef();
 
     this.state = {
       renderedSteps: [],
@@ -89,7 +86,7 @@ class ChatBot extends Component {
         settings = defaultCustomSettings;
       }
 
-      chatSteps[step.id] = Object.assign({}, settings, schema.parse(step));
+      chatSteps[step.id] = {...settings, ...schema.parse(step)};
     }
 
     schema.checkInvalidIds(chatSteps);
@@ -116,8 +113,8 @@ class ChatBot extends Component {
 
     this.supportsScrollBehavior = 'scrollBehavior' in document.documentElement.style;
 
-    if (this.setContentRef.current) {
-      this.setContentRef.current.addEventListener('DOMNodeInserted', this.onNodeInserted);
+    if (this.contentRef.current) {
+      this.contentRef.current.addEventListener('DOMNodeInserted', this.onNodeInserted);
       window.addEventListener('resize', this.onResize);
     }
 
@@ -132,8 +129,8 @@ class ChatBot extends Component {
         // focus input if last step cached is a user step
         this.setState({ disabled: false }, () => {
           if (enableMobileAutoFocus || !isMobile()) {
-            if (this.input) {
-              this.input.focus();
+            if (this.inputRef.current) {
+              this.inputRef.current.focus();
             }
           }
         });
@@ -161,8 +158,8 @@ class ChatBot extends Component {
   }
 
   componentWillUnmount() {
-    if (this.setContentRef.current) {
-      this.setContentRef.current.removeEventListener('DOMNodeInserted', this.onNodeInserted);
+    if (this.contentRef.current) {
+      this.contentRef.current.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
     }
   }
@@ -183,7 +180,7 @@ class ChatBot extends Component {
   };
 
   onResize = () => {
-    this.setContentRef.current.scrollTop = this.setContentRef.current.scrollHeight;
+    this.contentRef.current.scrollTop = this.contentRef.current.scrollHeight;
   };
 
   onRecognitionChange = value => {
@@ -262,11 +259,14 @@ class ChatBot extends Component {
       delete currentStep.options;
 
       // replace choose option for user message
-      currentStep = Object.assign({}, currentStep, option, defaultUserSettings, {
+      currentStep = {
+        ...currentStep,
+        ...option,
+        ...defaultUserSettings,
         user: true,
         message: option.label,
         trigger
-      });
+      };
 
       renderedSteps.pop();
       previousSteps.pop();
@@ -284,13 +284,13 @@ class ChatBot extends Component {
       }
 
       const trigger = this.getTriggeredStep(currentStep.trigger, currentStep.value);
-      let nextStep = Object.assign({}, steps[trigger]);
+      let nextStep = {...steps[trigger]};
 
       if (nextStep.message) {
         nextStep.message = this.getStepMessage(nextStep.message);
       } else if (nextStep.update) {
         const updateStep = nextStep;
-        nextStep = Object.assign({}, steps[updateStep.update]);
+        nextStep = {...steps[updateStep.update]};
 
         if (nextStep.options) {
           for (let i = 0, len = nextStep.options.length; i < len; i += 1) {
@@ -310,8 +310,8 @@ class ChatBot extends Component {
         if (nextStep.user) {
           this.setState({ disabled: false }, () => {
             if (enableMobileAutoFocus || !isMobile()) {
-              if (this.input) {
-                this.input.focus();
+              if (this.inputRef.current) {
+                this.inputRef.current.focus();
               }
             }
           });
@@ -449,7 +449,7 @@ class ChatBot extends Component {
         value: inputValue
       };
 
-      currentStep = Object.assign({}, defaultUserSettings, currentStep, step);
+      currentStep = {...defaultUserSettings, ...currentStep, ...step};
 
       renderedSteps.push(currentStep);
       previousSteps.push(currentStep);
@@ -463,8 +463,8 @@ class ChatBot extends Component {
           inputValue: ''
         },
         () => {
-          if (this.input) {
-            this.input.blur();
+          if (this.inputRef.current) {
+            this.inputRef.current.blur();
           }
         }
       );
@@ -494,8 +494,8 @@ class ChatBot extends Component {
               },
               () => {
                 if (enableMobileAutoFocus || !isMobile()) {
-                  if (this.input) {
-                    this.input.focus();
+                  if (this.inputRef.current) {
+                    this.inputRef.current.focus();
                   }
                 }
               }
@@ -669,7 +669,7 @@ class ChatBot extends Component {
           {!hideHeader && header}
           <Content
             className="rsc-content"
-            ref={this.setContentRef}
+            ref={this.contentRef}
             floating={floating}
             style={contentStyle}
             height={height}
@@ -682,7 +682,7 @@ class ChatBot extends Component {
               <Input
                 type="textarea"
                 style={inputStyle}
-                ref={this.setInputRef}
+                ref={this.inputRef}
                 className="rsc-input"
                 placeholder={inputInvalid ? '' : inputPlaceholder}
                 onKeyDown={this.handleKeyPress}
