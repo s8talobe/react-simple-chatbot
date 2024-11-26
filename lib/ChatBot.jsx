@@ -30,6 +30,8 @@ class ChatBot extends Component {
 
     this.contentRef = React.createRef();
 
+    this.observerRef = React.createRef();
+
     this.inputRef = React.createRef();
 
     this.state = {
@@ -114,7 +116,10 @@ class ChatBot extends Component {
     this.supportsScrollBehavior = 'scrollBehavior' in document.documentElement.style;
 
     if (this.contentRef.current) {
-      this.contentRef.current.addEventListener('DOMNodeInserted', this.onNodeInserted);
+      const observer = new MutationObserver(this.onNodeInserted)
+      observer.observe(this.contentRef.current, { attributes: true, childList: true, subtree: true })
+      this.observerRef.current = observer
+      //this.contentRef.current.addEventListener('DOMNodeInserted', this.onNodeInserted);
       window.addEventListener('resize', this.onResize);
     }
 
@@ -159,15 +164,15 @@ class ChatBot extends Component {
 
   componentWillUnmount() {
     if (this.contentRef.current) {
-      this.contentRef.current.removeEventListener('DOMNodeInserted', this.onNodeInserted);
+      this.observerRef.current.disconnect()
+      //this.contentRef.current.removeEventListener('DOMNodeInserted', this.onNodeInserted);
       window.removeEventListener('resize', this.onResize);
     }
   }
 
   onNodeInserted = (event) => {
-    const { currentTarget: target } = event;
+    const target = this.contentRef.current; //event;
     const { enableSmoothScroll } = this.props;
-
     if (enableSmoothScroll && this.supportsScrollBehavior) {
       target.scroll({
         top: target.scrollHeight,
